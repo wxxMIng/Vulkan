@@ -112,7 +112,7 @@ int	fopen_s( FILE**, const char *, const char * );
 #define FRAME_LAG		2
 #define SWAPCHAINIMAGECOUNT	2
 
-#define NUM_INSTANCES		16
+extern int NUM_INSTANCES = 16;
 
 // these are here to flag why addresses are being passed into a vulkan function --
 // 1. is it because the function wants to consume the contents of that tructure or array (IN)?
@@ -167,7 +167,7 @@ const int RIGHT  = { 1 };
 // graphics parameters:
 
 const double FOV =		glm::radians(60.);	// field-of-view angle
-const float EYEDIST =		3.;			// eye distance
+const float EYEDIST =		20.;			// eye distance
 const float OMEGA =		2.*M_PI;		// angular velocity, radians/sec
 
 #define SPIRV_MAGIC		0x07230203
@@ -3993,7 +3993,8 @@ RenderScene( )
 
 	const uint32_t vertexCount = sizeof(VertexData)     / sizeof(VertexData[0]);
     const uint32_t indexCount  = sizeof(JustIndexData)  / sizeof(JustIndexData[0]);
-    const uint32_t instanceCount = 1;
+    //const uint32_t instanceCount = 1;
+	const uint32_t instanceCount = NUM_INSTANCES;
     const uint32_t firstVertex = 0;
     const uint32_t firstIndex = 0;
     const uint32_t firstInstance = 0;
@@ -4123,7 +4124,7 @@ Reset( )
 	Light1.uKs = 1.f;
 	Light1.uShininess = 100.f;
 	Light1.uEyePos = glm::vec4( eye, 1. );
-	Light1.uLightPos1 = glm::vec4( 100., 20., 50., 1.);
+	Light1.uLightPos1 = glm::vec4( 50., -20., 100., 1.);
 	Light1.uLightSpecularColor1 = glm::vec4( 1., 0.5, 0.1, 1. );
 
 	Light2.uKa = 0.5f;
@@ -4296,12 +4297,22 @@ GLFWKeyboard( GLFWwindow * window, int key, int scancode, int action, int mods )
 				Verbose = ! Verbose;
 				break;
 
-			case '2':
-				Fill05DataBuffer(MyLightUniformBuffer, (void*)&Light2);
-				break;
 			case '1':
-				Fill05DataBuffer(MyLightUniformBuffer, (void*)&Light1);
+				NUM_INSTANCES = 1;
+			break;
+
+			case '4':
+				NUM_INSTANCES = 4;
 				break;
+
+			case '9':
+				NUM_INSTANCES = 9;
+				break;
+
+			case '0':
+				NUM_INSTANCES = 16;
+				break;
+
 			default:
 				fprintf( FpDebug, "Unknown key hit: 0x%04x = '%c'\n", key, key );
 				fprintf( stderr,  "Unknown key hit: 0x%04x = '%c'\n", key, key );

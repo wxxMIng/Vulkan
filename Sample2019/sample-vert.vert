@@ -44,6 +44,7 @@ layout ( location = 3 ) out vec3 vL;
 layout ( location = 4 ) out vec3 vE;
 
 
+
 void
 main( ) 
 {
@@ -68,5 +69,16 @@ main( )
 	vec4 eyePos = Light.uEyePos;
 	vE = normalize( eyePos.xyz -  ECposition.xyz );          // vector from the point
 	                                                         // to the eye
-	gl_Position = PVM * vec4( aVertex, 1. );
+	//gl_Position = PVM * vec4( aVertex, 1. );
+	int    NUMINSTANCES = 16;
+	float DELTA         =  3.0;
+
+    float xdelta = DELTA * float( gl_InstanceIndex % 4 );
+	float ydelta = DELTA * float( gl_InstanceIndex / 4 );
+	vColor = vec3( 1., float( (1.+gl_InstanceIndex) ) / float( NUMINSTANCES ), 0. );
+
+	xdelta -= DELTA * sqrt( float(NUMINSTANCES) ) / 2.;
+	ydelta -= DELTA * sqrt( float(NUMINSTANCES) ) / 2.;
+	vec4 vertex = vec4( aVertex.xyz + vec3( xdelta, ydelta, 0. ), 1. );
+	gl_Position = PVM * vertex;
 }
